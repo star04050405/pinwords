@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>pinwords. 显化搜图词库</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-180.png">
+<link rel="manifest" href="manifest.json">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-size:16px}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI",sans-serif;
+ background:#FDFBF8;color:#2B2B2B;padding-bottom:60px}
+.wrap{max-width:520px;margin:0 auto;padding:0 16px}
+header{padding:44px 0 8px;text-align:center}
+.kicker{font-size:.72rem;letter-spacing:.22em;color:#E8752A;font-weight:700}
+h1{font-family:Georgia,"Songti SC",serif;font-size:2.1rem;font-style:italic;margin:8px 0 6px;color:#2B2B2B}
+.sub{font-size:.86rem;color:#8A8378;line-height:1.7}
+.sub b{color:#E8752A;font-weight:700}
+.hero{margin:18px 0 6px;background:#fff;border-radius:20px;padding:14px 16px;
+ box-shadow:0 4px 18px rgba(120,100,60,.08);border:1px solid #F3EDE2}
+.hero .tip{font-size:.8rem;color:#6B6558;line-height:1.75}
+.hero .tip b{color:#2B2B2B}
+.cat{margin-top:22px;background:#fff;border-radius:20px;overflow:hidden;
+ box-shadow:0 4px 18px rgba(120,100,60,.08);border:1px solid #F3EDE2}
+.chead{display:flex;align-items:center;gap:10px;padding:14px 16px 10px}
+.chead .dot{width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.czh{font-size:1.02rem;font-weight:800}
+.cen{font-size:.66rem;letter-spacing:.18em;color:#B0A796}
+.copyall{margin-left:auto;font-size:.7rem;color:#8A8378;border:1px solid #EAE2D4;background:#FAF6EF;
+ border-radius:999px;padding:5px 11px;cursor:pointer;font-weight:600}
+.copyall:active{transform:scale(.95)}
+.wl{padding:2px 12px 14px;display:flex;flex-direction:column;gap:8px}
+.w{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:14px;background:#FDFBF8;
+ border:1px solid #F3EDE2;cursor:pointer;position:relative;transition:transform .12s}
+.w:active{transform:scale(.97)}
+.w .en{font-family:Georgia,"Songti SC",serif;font-style:italic;font-size:.95rem;flex:1;min-width:0;overflow-wrap:break-word}
+.w .cn{font-size:.74rem;color:#8A8378;white-space:nowrap}
+.w .go{width:28px;height:28px;border-radius:10px;background:#F3EDE2;color:#8A8378;
+ display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:.8rem;flex-shrink:0}
+.w.done{background:#F0F7F0;border-color:#CDE8CD}
+.w.done .en{color:#3E7C4E}
+.tick{position:absolute;right:56px;top:-8px;font-size:.62rem;color:#3E7C4E;font-weight:700;opacity:0;transition:opacity .2s}
+.w.done .tick{opacity:1}
+.foot{margin-top:30px;text-align:center;font-size:.76rem;color:#A29A8C;line-height:1.9}
+.foot a{color:#E8752A;text-decoration:none;font-weight:700}
+#toast{position:fixed;left:50%;bottom:36px;transform:translateX(-50%) translateY(20px);
+ background:#2B2B2B;color:#fff;font-size:.82rem;padding:10px 20px;border-radius:999px;
+ opacity:0;pointer-events:none;transition:all .25s;z-index:99;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <div class="kicker">WISHBOARD COMPANION</div>
+ <h1>pinwords.</h1>
+ <div class="sub">显化愿景板 · Pinterest 搜图词库<br>
+ 六大板块 × 30 个关键词 · 中英对照<br><b>点词条复制 · 点 ↗ 直达搜索</b></div>
+</header>
+<div class="hero"><div class="tip">
+ 💡 用法：贴愿景板前，先来这里挑词 → 复制 → 打开 Pinterest 粘贴搜索 → 把搜到的心动图存进相册。Roxie 的原话：<b>「做完就收起来，到了日期再拿出来对答案。」</b>
+</div></div>
+<div id="list"></div>
+<div class="foot">
+ 配套 <a href="https://star04050405.github.io/wishboard/">wishboard. 愿景板</a> 使用<br>
+ 方法论来自 Roxie Nafousi《Manifest》· 中英混搭原词照录
+</div>
+</div>
+<div id="toast"></div>
+<script>
+var CATS=[{"n": "个人发展", "en": "SELF", "ic": "🌱", "color": "#A8D5BA", "words": [["morning routine aesthetic", "晨间仪式感"], ["journaling desk", "手账书桌"], ["confident woman aesthetic", "自信女人氛围"], ["healing quotes", "治愈系语录"], ["self love reminders", "自我关爱提醒"], ["自律日常 aesthetic", "自律日常（中英混搭原词）"]]}, {"n": "爱情", "en": "LOVE", "ic": "💗", "color": "#F4B8C1", "words": [["couple goals aesthetic", "情侣目标感"], ["soft relationship aesthetic", "温柔恋爱氛围"], ["soulmate energy", "灵魂伴侣能量"], ["date night aesthetic", "约会之夜"], ["cozy couple home", "温馨二人小家"]]}, {"n": "事业", "en": "CAREER", "ic": "💼", "color": "#F5D491", "words": [["dream desk setup", "梦想书桌"], ["creative studio space", "创意工作室"], ["work from anywhere laptop", "随处办公"], ["career goals aesthetic", "事业目标感"], ["freelance life", "自由职业生活"]]}, {"n": "朋友和家人", "en": "PEOPLE", "ic": "🫂", "color": "#F5C89A", "words": [["friends dinner table aesthetic", "朋友餐桌"], ["family moments film photo", "家庭瞬间·胶片"], ["girls trip aesthetic", "姐妹旅行"], ["cozy gathering", "温暖聚会"]]}, {"n": "房子 / 家", "en": "HOME", "ic": "🕯", "color": "#AFC8E8", "words": [["dream home interior", "梦想之家室内"], ["cozy living room natural light", "自然光客厅"], ["mediterranean kitchen", "地中海厨房"], ["reading nook aesthetic", "阅读角落"], ["minimalist bedroom", "极简卧室"]]}, {"n": "兴趣 / 娱乐", "en": "PLAY", "ic": "🎨", "color": "#CDB4E0", "words": [["travel bucket list destinations", "旅行清单目的地"], ["santorini view", "圣托里尼景色"], ["yoga by the ocean", "海边瑜伽"], ["film photography travel", "旅行胶片摄影"], ["hobby aesthetic", "爱好氛围"]]}];
+function cp(txt,el){
+ var done=function(){toast('已复制：'+txt);
+  if(el){el.classList.add('done');setTimeout(function(){el.classList.remove('done')},1600)}};
+ if(navigator.clipboard&&navigator.clipboard.writeText){
+  navigator.clipboard.writeText(txt).then(done).catch(function(){fb(txt,done)});
+ }else{fb(txt,done)}
+}
+function fb(txt,cb){var t=document.createElement('textarea');t.value=txt;t.style.position='fixed';t.style.opacity='0';
+ document.body.appendChild(t);t.select();try{document.execCommand('copy');cb()}catch(e){toast('复制失败，长按词条手动复制')}document.body.removeChild(t)}
+var l=document.getElementById('list');
+CATS.forEach(function(c){
+ var cat=document.createElement('div');cat.className='cat';
+ var h=document.createElement('div');h.className='chead';
+ h.innerHTML='<div class="dot" style="background:'+c.color+'">'+c.ic+'</div>'+
+  '<div><div class="czh">'+c.n+'</div><div class="cen">'+c.en+'</div></div>';
+ var ca=document.createElement('button');ca.className='copyall';ca.textContent='复制全部';
+ ca.onclick=function(ev){ev.stopPropagation();cp(c.words.map(function(w){return w[0]}).join('\n'),null);toast('已复制「'+c.n+'」全部 '+c.words.length+' 个词')};
+ h.appendChild(ca);
+ var wl=document.createElement('div');wl.className='wl';
+ c.words.forEach(function(w){
+  var d=document.createElement('div');d.className='w';
+  d.innerHTML='<div class="en">'+w[0]+'</div><div class="tick">已复制 ✓</div><div class="cn">'+w[1]+'</div>';
+  var g=document.createElement('a');g.className='go';g.textContent='↗';
+  g.href='https://www.pinterest.com/search/pins/?q='+encodeURIComponent(w[0]);g.target='_blank';g.rel='noopener';
+  g.onclick=function(ev){ev.stopPropagation()};
+  d.appendChild(g);
+  d.onclick=function(){cp(w[0],d)};
+  wl.appendChild(d);
+ });
+ cat.appendChild(h);cat.appendChild(wl);l.appendChild(cat);
+});
+var tt;
+function toast(s){var t=document.getElementById('toast');t.textContent=s;t.classList.add('show');
+ clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show')},1700)}
+</script>
+</body>
+</html>
